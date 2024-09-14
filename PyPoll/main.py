@@ -1,7 +1,30 @@
-import os
-import csv
+import pandas as pd
 
-CSV_PATH = os.path.join('Resources', 'election_data.csv')
+file_path = 'election_data.csv'
+df = pd.read_csv(file_path)
 
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
-with open(CSV_PATH) as csvfile: 
+total_votes = df.shape[0]
+
+vote_counts = df['Candidate'].value_counts()
+
+vote_percentages = (vote_counts / total_votes) * 100
+
+winner = vote_counts.idxmax()
+winner_votes = vote_counts.max()
+
+print("Election Results")
+print(f"Total Votes: {total_votes}")
+for candidate, votes in vote_counts.items():
+    percentage = vote_percentages[candidate]
+    print(f"{candidate}: {percentage:.3f}% ({votes})")
+print(f"Winner: {winner}")
+
+with open('election_results.txt', 'w') as file:
+    file.write("Election Results\n")
+    file.write(f"Total Votes: {total_votes}\n")
+    for candidate, votes in vote_counts.items():
+        percentage = vote_percentages[candidate]
+        file.write(f"{candidate}: {percentage:.3f}% ({votes})\n")
+    file.write(f"Winner: {winner}\n")
+
+print("Analysis has been written to election_results.txt")
